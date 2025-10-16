@@ -1,379 +1,231 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
-import { useToast } from '@/hooks/use-toast';
-
-type Difficulty = 'Easy' | 'Medium' | 'Hard';
-
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  difficulty: Difficulty;
-  answer: string;
-  userAnswer?: string;
-  completed?: boolean;
-}
-
-const tasks: Task[] = [
-  {
-    id: 1,
-    title: 'Сравнение масс',
-    description: 'Слон весит 5000 кг, а бегемот - 3200 кг. На сколько килограммов слон тяжелее бегемота?',
-    difficulty: 'Easy',
-    answer: '1800'
-  },
-  {
-    id: 2,
-    title: 'Преобразование единиц длины',
-    description: 'Расстояние от дома до школы 2 км 350 м. Сколько это метров?',
-    difficulty: 'Easy',
-    answer: '2350'
-  },
-  {
-    id: 3,
-    title: 'Объём и вместимость',
-    description: 'В аквариум влили 15 литров воды, затем ещё 8500 мл. Сколько всего воды в аквариуме? Ответ дай в литрах.',
-    difficulty: 'Medium',
-    answer: '23.5'
-  },
-  {
-    id: 4,
-    title: 'Время и скорость',
-    description: 'Поезд движется со скоростью 75 км/ч. За какое время он преодолеет 300 км? Ответ дай в часах.',
-    difficulty: 'Medium',
-    answer: '4'
-  },
-  {
-    id: 5,
-    title: 'Площадь прямоугольника',
-    description: 'Длина участка 25 м, ширина 16 м. Найди площадь участка в квадратных метрах.',
-    difficulty: 'Medium',
-    answer: '400'
-  },
-  {
-    id: 6,
-    title: 'Сложная задача на величины',
-    description: 'Бассейн вмещает 72 кубометра воды. Через одну трубу он наполняется за 6 часов, через другую - за 9 часов. За какое время наполнится бассейн, если открыть обе трубы? Ответ округли до десятых.',
-    difficulty: 'Hard',
-    answer: '3.6'
-  },
-  {
-    id: 7,
-    title: 'Преобразование времени',
-    description: 'Сколько секунд в 2 часах 35 минутах 20 секундах?',
-    difficulty: 'Hard',
-    answer: '9320'
-  },
-  {
-    id: 8,
-    title: 'Плотность и масса',
-    description: 'Плотность железа 7800 кг/м³. Найди массу железного куба с ребром 0,5 м. Ответ дай в килограммах.',
-    difficulty: 'Hard',
-    answer: '975'
-  }
-];
 
 const Index = () => {
-  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | 'All'>('All');
-  const [taskList, setTaskList] = useState<Task[]>(tasks);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [feedbackName, setFeedbackName] = useState('');
-  const [feedbackEmail, setFeedbackEmail] = useState('');
-  const [feedbackMessage, setFeedbackMessage] = useState('');
-  const { toast } = useToast();
-
-  const filteredTasks = selectedDifficulty === 'All' 
-    ? taskList 
-    : taskList.filter(task => task.difficulty === selectedDifficulty);
-
-  const completedCount = taskList.filter(t => t.completed).length;
-  const progressPercent = (completedCount / taskList.length) * 100;
-
-  const handleAnswerChange = (taskId: number, answer: string) => {
-    setTaskList(prev => prev.map(task => 
-      task.id === taskId ? { ...task, userAnswer: answer } : task
-    ));
-  };
-
-  const checkAnswer = (taskId: number) => {
-    const task = taskList.find(t => t.id === taskId);
-    if (!task) return;
-
-    const isCorrect = task.userAnswer?.trim() === task.answer;
-    
-    if (isCorrect) {
-      setTaskList(prev => prev.map(t => 
-        t.id === taskId ? { ...t, completed: true } : t
-      ));
-      toast({
-        title: '🎉 Правильно!',
-        description: 'Отличная работа! Продолжай в том же духе.',
-      });
-    } else {
-      toast({
-        title: '😔 Неверно',
-        description: 'Попробуй ещё раз! Внимательно проверь расчёты.',
-        variant: 'destructive'
-      });
-    }
-  };
-
-  const handleFeedbackSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: '✅ Спасибо за обратную связь!',
-      description: 'Мы обязательно рассмотрим ваше сообщение.',
-    });
-    setFeedbackName('');
-    setFeedbackEmail('');
-    setFeedbackMessage('');
-  };
-
-  const difficulties: Array<Difficulty | 'All'> = ['All', 'Easy', 'Medium', 'Hard'];
-  const difficultyLabels = {
-    'All': 'Все',
-    'Easy': 'Лёгкий',
-    'Medium': 'Средний',
-    'Hard': 'Сложный'
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-muted/30 via-background to-secondary/10">
-      <section className="relative overflow-hidden bg-gradient-to-r from-primary via-secondary to-accent py-20 px-4">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 py-20 px-4">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-10 left-10 w-40 h-40 bg-white rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-10 right-10 w-52 h-52 bg-white rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute top-1/2 left-1/3 w-36 h-36 bg-white rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }}></div>
         </div>
         
-        <div className="container mx-auto max-w-5xl relative z-10 animate-fade-in">
-          <div className="text-center text-white">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">
-              МАТВХ & МАТЕКА
+        <div className="container mx-auto max-w-6xl relative z-10">
+          <div className="text-center text-white animate-fade-in">
+            <div className="inline-block mb-6">
+              <div className="flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2">
+                <Icon name="Trophy" size={24} className="text-yellow-300" />
+                <span className="font-semibold">Платформа для олимпиадников</span>
+              </div>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight leading-tight">
+              МатМастер:<br />Величины
             </h1>
-            <p className="text-xl md:text-2xl mb-8 font-medium opacity-95">
-              Подготовка к олимпиадам по математике
-            </p>
-            <p className="text-lg md:text-xl mb-10 max-w-3xl mx-auto opacity-90">
-              Интерактивная платформа для изучения величин: массы, длины, времени, объёма, площади. 
-              Решай задачи, проверяй ответы и готовься к олимпиадам вместе с нами!
+            
+            <p className="text-xl md:text-2xl mb-8 font-medium opacity-95 max-w-3xl mx-auto">
+              Интерактивная платформа для школьников, учителей и родителей
             </p>
             
-            <div className="flex flex-wrap gap-6 justify-center items-center">
-              <div className="flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-xl px-6 py-3">
-                <Icon name="Calculator" size={28} className="text-white" />
-                <span className="font-semibold text-lg">8 заданий</span>
+            <p className="text-lg md:text-xl mb-12 max-w-4xl mx-auto opacity-90 leading-relaxed">
+              Комплексная подготовка к математическим олимпиадам по теме "Величины". 
+              Теория, практика, тесты и персональные рекомендации в одном месте.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/30 transition-all hover:scale-105">
+                <Icon name="BookOpen" size={40} className="text-white mb-3 mx-auto" />
+                <h3 className="font-bold text-xl mb-2">Для школьников</h3>
+                <p className="opacity-90">Интерактивные задания с мгновенной проверкой</p>
               </div>
-              <div className="flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-xl px-6 py-3">
-                <Icon name="Ruler" size={28} className="text-white" />
-                <span className="font-semibold text-lg">Все величины</span>
+              
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/30 transition-all hover:scale-105">
+                <Icon name="GraduationCap" size={40} className="text-white mb-3 mx-auto" />
+                <h3 className="font-bold text-xl mb-2">Для учителей</h3>
+                <p className="opacity-90">Готовые материалы и система оценки</p>
               </div>
-              <div className="flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-xl px-6 py-3">
-                <Icon name="Trophy" size={28} className="text-white" />
-                <span className="font-semibold text-lg">3 уровня</span>
+              
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/30 transition-all hover:scale-105">
+                <Icon name="Users" size={40} className="text-white mb-3 mx-auto" />
+                <h3 className="font-bold text-xl mb-2">Для родителей</h3>
+                <p className="opacity-90">Контроль прогресса и результаты</p>
               </div>
             </div>
 
-            <Button 
-              size="lg" 
-              className="mt-10 bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 rounded-full shadow-2xl hover:scale-105 transition-transform"
-              onClick={() => document.getElementById('tasks')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              Начать обучение
-              <Icon name="ArrowDown" size={20} className="ml-2" />
-            </Button>
+            <div className="flex flex-wrap gap-4 justify-center mb-12">
+              <Button 
+                size="lg" 
+                className="bg-white text-blue-600 hover:bg-white/90 text-lg px-10 py-7 rounded-full shadow-2xl hover:scale-105 transition-transform font-bold"
+                onClick={() => window.location.href = '/theory'}
+              >
+                <Icon name="BookOpen" size={22} className="mr-2" />
+                Начать обучение
+              </Button>
+              
+              <Button 
+                size="lg" 
+                className="bg-white/10 backdrop-blur-sm text-white border-2 border-white hover:bg-white/20 text-lg px-10 py-7 rounded-full shadow-xl hover:scale-105 transition-transform font-bold"
+                onClick={() => window.location.href = '/tasks'}
+              >
+                <Icon name="Target" size={22} className="mr-2" />
+                Перейти к заданиям
+              </Button>
+            </div>
+
+            <div className="flex flex-wrap gap-8 justify-center items-center text-sm opacity-90">
+              <div className="flex items-center gap-2">
+                <Icon name="Check" size={20} />
+                <span>50+ заданий</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Icon name="Check" size={20} />
+                <span>5 уровней сложности</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Icon name="Check" size={20} />
+                <span>Подробная теория</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Icon name="Check" size={20} />
+                <span>Мгновенная проверка</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="tasks" className="py-16 px-4">
+      <section className="py-20 px-4 bg-white">
         <div className="container mx-auto max-w-6xl">
-          <div className="mb-10 animate-slide-up">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
-              <div>
-                <h2 className="text-4xl font-bold mb-2 text-foreground">Задания</h2>
-                <p className="text-muted-foreground text-lg">Выбери уровень сложности и приступай к решению</p>
-              </div>
-              
-              <Card className="w-full md:w-auto bg-card/80 backdrop-blur-sm border-2">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <Icon name="Target" size={24} className="text-primary" />
-                    <span className="font-semibold text-lg">Прогресс</span>
-                  </div>
-                  <Progress value={progressPercent} className="h-3 mb-2" />
-                  <p className="text-sm text-muted-foreground">
-                    {completedCount} из {taskList.length} заданий выполнено
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="flex flex-wrap gap-3 mb-8">
-              {difficulties.map((diff) => (
-                <Button
-                  key={diff}
-                  variant={selectedDifficulty === diff ? 'default' : 'outline'}
-                  onClick={() => setSelectedDifficulty(diff)}
-                  className={`rounded-full px-6 transition-all ${
-                    selectedDifficulty === diff 
-                      ? 'bg-primary text-primary-foreground shadow-lg scale-105' 
-                      : 'hover:scale-105'
-                  }`}
-                >
-                  {difficultyLabels[diff]}
-                </Button>
-              ))}
-            </div>
+          <div className="text-center mb-16 animate-slide-up">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Что вы изучите</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Полный курс по теме "Величины" с практическими заданиями
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredTasks.map((task, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { icon: 'Weight', title: 'Масса', desc: 'Преобразование единиц массы, сравнение, задачи на взвешивание', color: 'from-orange-500 to-red-500' },
+              { icon: 'Ruler', title: 'Длина и расстояние', desc: 'Метрические единицы, периметр, задачи на движение', color: 'from-blue-500 to-cyan-500' },
+              { icon: 'Clock', title: 'Время', desc: 'Часы, минуты, секунды, календарь, временные интервалы', color: 'from-green-500 to-emerald-500' },
+              { icon: 'Container', title: 'Объём', desc: 'Литры, миллилитры, кубические метры, задачи на наполнение', color: 'from-purple-500 to-pink-500' },
+              { icon: 'Square', title: 'Площадь', desc: 'Квадратные единицы, площадь фигур, земельные участки', color: 'from-yellow-500 to-orange-500' },
+              { icon: 'Zap', title: 'Скорость', desc: 'Расчёт скорости, задачи на встречное движение', color: 'from-indigo-500 to-purple-500' }
+            ].map((item, index) => (
               <Card 
-                key={task.id} 
-                className={`hover:shadow-xl transition-all duration-300 animate-scale-in border-2 ${
-                  task.completed 
-                    ? 'bg-secondary/10 border-secondary' 
-                    : 'hover:border-primary/50'
-                }`}
+                key={index} 
+                className="border-2 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden group animate-scale-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
+                <div className={`h-2 bg-gradient-to-r ${item.color}`}></div>
                 <CardHeader>
-                  <div className="flex justify-between items-start mb-2">
-                    <CardTitle className="text-xl">{task.title}</CardTitle>
-                    {task.completed && (
-                      <Icon name="CheckCircle" size={24} className="text-secondary" />
-                    )}
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    <Icon name={item.icon as any} size={28} className="text-white" />
                   </div>
-                  <CardDescription className="flex items-center gap-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      task.difficulty === 'Easy' 
-                        ? 'bg-secondary/20 text-secondary' 
-                        : task.difficulty === 'Medium'
-                        ? 'bg-accent/40 text-accent-foreground'
-                        : 'bg-primary/20 text-primary'
-                    }`}>
-                      {difficultyLabels[task.difficulty]}
-                    </span>
-                  </CardDescription>
+                  <CardTitle className="text-2xl mb-2">{item.title}</CardTitle>
+                  <CardDescription className="text-base leading-relaxed">{item.desc}</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-foreground mb-6 leading-relaxed">{task.description}</p>
-                  
-                  <div className="space-y-3">
-                    <Label htmlFor={`answer-${task.id}`} className="text-sm font-medium">
-                      Твой ответ:
-                    </Label>
-                    <div className="flex gap-2">
-                      <Input
-                        id={`answer-${task.id}`}
-                        type="text"
-                        placeholder="Введи ответ"
-                        value={task.userAnswer || ''}
-                        onChange={(e) => handleAnswerChange(task.id, e.target.value)}
-                        disabled={task.completed}
-                        className="flex-1"
-                      />
-                      <Button
-                        onClick={() => checkAnswer(task.id)}
-                        disabled={!task.userAnswer || task.completed}
-                        className={task.completed ? 'bg-secondary' : ''}
-                      >
-                        {task.completed ? (
-                          <>
-                            <Icon name="Check" size={18} className="mr-1" />
-                            Верно
-                          </>
-                        ) : (
-                          <>
-                            <Icon name="Send" size={18} className="mr-1" />
-                            Проверить
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-16 px-4 bg-gradient-to-br from-secondary/5 to-primary/5">
-        <div className="container mx-auto max-w-3xl">
-          <Card className="shadow-2xl border-2 animate-fade-in">
-            <CardHeader className="text-center">
-              <CardTitle className="text-3xl font-bold mb-2 flex items-center justify-center gap-3">
-                <Icon name="MessageSquare" size={32} className="text-primary" />
-                Обратная связь
-              </CardTitle>
-              <CardDescription className="text-lg">
-                Есть вопросы или предложения? Напишите нам!
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleFeedbackSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Имя</Label>
-                  <Input
-                    id="name"
-                    placeholder="Ваше имя"
-                    value={feedbackName}
-                    onChange={(e) => setFeedbackName(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={feedbackEmail}
-                    onChange={(e) => setFeedbackEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="message">Сообщение</Label>
-                  <Textarea
-                    id="message"
-                    placeholder="Расскажите, что вы думаете о платформе..."
-                    value={feedbackMessage}
-                    onChange={(e) => setFeedbackMessage(e.target.value)}
-                    required
-                    rows={5}
-                    className="resize-none"
-                  />
-                </div>
+      <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-purple-50">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Как это работает</h2>
+            <p className="text-xl text-gray-600">Простой путь от теории к олимпиадным задачам</p>
+          </div>
 
-                <Button 
-                  type="submit" 
-                  size="lg" 
-                  className="w-full bg-secondary hover:bg-secondary/90 text-lg py-6"
-                >
-                  <Icon name="Send" size={20} className="mr-2" />
-                  Отправить сообщение
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {[
+              { step: '1', icon: 'BookOpen', title: 'Изучай теорию', desc: 'Понятные объяснения с примерами' },
+              { step: '2', icon: 'Lightbulb', title: 'Решай задачи', desc: 'От простых к олимпиадным' },
+              { step: '3', icon: 'CheckCircle', title: 'Получай оценку', desc: 'Мгновенная проверка ответов' },
+              { step: '4', icon: 'TrendingUp', title: 'Отслеживай прогресс', desc: 'Статистика и достижения' }
+            ].map((item, index) => (
+              <div key={index} className="text-center animate-fade-in" style={{ animationDelay: `${index * 0.15}s` }}>
+                <div className="relative mb-6">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto shadow-xl">
+                    <Icon name={item.icon as any} size={32} className="text-white" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center font-bold text-gray-900 shadow-lg">
+                    {item.step}
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-gray-900">{item.title}</h3>
+                <p className="text-gray-600">{item.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <footer className="bg-foreground/5 py-8 px-4 border-t">
-        <div className="container mx-auto max-w-6xl text-center text-muted-foreground">
-          <p className="text-sm">
-            © 2024 МАТВХ & МАТЕКА. Платформа для подготовки к олимпиадам по математике
+      <section className="py-20 px-4 bg-white">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Преимущества платформы</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[
+              { icon: 'Sparkles', title: 'Адаптивное обучение', desc: 'Система подбирает задания под ваш уровень и автоматически усложняет материал по мере прогресса' },
+              { icon: 'BarChart', title: 'Детальная статистика', desc: 'Отслеживайте прогресс по каждой теме, анализируйте ошибки и работайте над слабыми местами' },
+              { icon: 'Award', title: 'Система достижений', desc: 'Получайте награды за успехи, соревнуйтесь с друзьями и мотивируйте себя на новые победы' },
+              { icon: 'Headphones', title: 'Поддержка 24/7', desc: 'Видеоразборы сложных задач, подсказки и помощь преподавателей в любое время' }
+            ].map((item, index) => (
+              <Card key={index} className="border-2 hover:shadow-xl transition-all hover:border-blue-300">
+                <CardHeader>
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Icon name={item.icon as any} size={24} className="text-blue-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl mb-2">{item.title}</CardTitle>
+                      <CardDescription className="text-base leading-relaxed">{item.desc}</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div className="container mx-auto max-w-4xl text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">Готовы начать?</h2>
+          <p className="text-xl mb-10 opacity-90">
+            Присоединяйтесь к тысячам школьников, которые уже готовятся к олимпиадам с нашей платформой
           </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Button 
+              size="lg" 
+              className="bg-white text-blue-600 hover:bg-white/90 text-lg px-10 py-7 rounded-full shadow-2xl hover:scale-105 transition-transform font-bold"
+              onClick={() => window.location.href = '/theory'}
+            >
+              <Icon name="Rocket" size={22} className="mr-2" />
+              Начать бесплатно
+            </Button>
+            <Button 
+              size="lg" 
+              className="bg-white/10 backdrop-blur-sm border-2 border-white hover:bg-white/20 text-lg px-10 py-7 rounded-full shadow-xl hover:scale-105 transition-transform font-bold"
+              onClick={() => window.location.href = '/feedback'}
+            >
+              <Icon name="MessageCircle" size={22} className="mr-2" />
+              Связаться с нами
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <footer className="bg-gray-900 text-white py-8 px-4">
+        <div className="container mx-auto max-w-6xl text-center">
+          <p className="text-gray-400 mb-2">© 2024 МатМастер: Величины</p>
+          <p className="text-sm text-gray-500">Платформа для подготовки к математическим олимпиадам</p>
         </div>
       </footer>
     </div>
