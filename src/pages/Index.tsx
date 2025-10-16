@@ -77,7 +77,7 @@ const Index = () => {
             <div className="flex flex-wrap gap-8 justify-center items-center text-sm opacity-90">
               <div className="flex items-center gap-2">
                 <Icon name="Check" size={20} />
-                <span>50+ заданий</span>
+                <span>25 заданий</span>
               </div>
               <div className="flex items-center gap-2">
                 <Icon name="Check" size={20} />

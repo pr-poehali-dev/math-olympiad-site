@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -282,7 +282,30 @@ const Tasks = () => {
     }
   ];
 
-  const [taskList, setTaskList] = useState<Task[]>(tasks);
+  const [taskList, setTaskList] = useState<Task[]>(() => {
+    const savedProgress = localStorage.getItem('mathmaster-progress');
+    if (savedProgress) {
+      try {
+        const parsed = JSON.parse(savedProgress);
+        return tasks.map(task => {
+          const saved = parsed.find((t: Task) => t.id === task.id);
+          return saved ? { ...task, completed: saved.completed, userAnswer: saved.userAnswer } : task;
+        });
+      } catch {
+        return tasks;
+      }
+    }
+    return tasks;
+  });
+
+  useEffect(() => {
+    const progressData = taskList.map(t => ({ 
+      id: t.id, 
+      completed: t.completed, 
+      userAnswer: t.userAnswer 
+    }));
+    localStorage.setItem('mathmaster-progress', JSON.stringify(progressData));
+  }, [taskList]);
 
   const categories = [
     { id: 'all', name: 'Все задания', icon: 'List', color: 'from-gray-500 to-gray-600' },
@@ -340,6 +363,17 @@ const Tasks = () => {
     setShowHints(prev => ({ ...prev, [taskId]: !prev[taskId] }));
   };
 
+  const resetProgress = () => {
+    if (confirm('Вы уверены, что хотите сбросить весь прогресс?')) {
+      setTaskList(tasks);
+      localStorage.removeItem('mathmaster-progress');
+      toast({
+        title: '🔄 Прогресс сброшен',
+        description: 'Можете начать заново!',
+      });
+    }
+  };
+
   const getDifficultyColor = (difficulty: Difficulty) => {
     switch (difficulty) {
       case 'Базовый': return 'bg-green-100 text-green-700 border-green-300';
@@ -387,6 +421,17 @@ const Tasks = () => {
                 <Icon name="BookOpen" size={18} className="mr-2" />
                 Теория
               </Button>
+              
+              {completedCount > 0 && (
+                <Button
+                  variant="ghost"
+                  className="text-white hover:bg-white/20"
+                  onClick={resetProgress}
+                >
+                  <Icon name="RotateCcw" size={18} className="mr-2" />
+                  Сбросить
+                </Button>
+              )}
             </div>
           </div>
 
