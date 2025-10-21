@@ -35,19 +35,28 @@ const Index = () => {
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
-              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/30 transition-all hover:scale-105">
+              <div 
+                className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/30 transition-all hover:scale-105 cursor-pointer"
+                onClick={() => window.location.href = '/games'}
+              >
                 <Icon name="BookOpen" size={40} className="text-white mb-3 mx-auto" />
                 <h3 className="font-bold text-xl mb-2">Для школьников</h3>
                 <p className="opacity-90">Интерактивные задания с мгновенной проверкой</p>
               </div>
               
-              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/30 transition-all hover:scale-105">
+              <div 
+                className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/30 transition-all hover:scale-105 cursor-pointer"
+                onClick={() => window.location.href = '/for-teachers'}
+              >
                 <Icon name="GraduationCap" size={40} className="text-white mb-3 mx-auto" />
                 <h3 className="font-bold text-xl mb-2">Для учителей</h3>
                 <p className="opacity-90">Готовые материалы и система оценки</p>
               </div>
               
-              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/30 transition-all hover:scale-105">
+              <div 
+                className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/30 transition-all hover:scale-105 cursor-pointer"
+                onClick={() => window.location.href = '/for-parents'}
+              >
                 <Icon name="Users" size={40} className="text-white mb-3 mx-auto" />
                 <h3 className="font-bold text-xl mb-2">Для родителей</h3>
                 <p className="opacity-90">Контроль прогресса и результаты</p>
@@ -67,10 +76,19 @@ const Index = () => {
               <Button 
                 size="lg" 
                 className="bg-white/10 backdrop-blur-sm text-white border-2 border-white hover:bg-white/20 text-lg px-10 py-7 rounded-full shadow-xl hover:scale-105 transition-transform font-bold"
+                onClick={() => window.location.href = '/games'}
+              >
+                <Icon name="Gamepad2" size={22} className="mr-2" />
+                Играть
+              </Button>
+              
+              <Button 
+                size="lg" 
+                className="bg-white/10 backdrop-blur-sm text-white border-2 border-white hover:bg-white/20 text-lg px-10 py-7 rounded-full shadow-xl hover:scale-105 transition-transform font-bold"
                 onClick={() => window.location.href = '/tasks'}
               >
                 <Icon name="Target" size={22} className="mr-2" />
-                Перейти к заданиям
+                Задания
               </Button>
             </div>
 

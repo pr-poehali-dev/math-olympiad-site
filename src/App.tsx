@@ -8,6 +8,9 @@ import Index from "./pages/Index";
 import Theory from "./pages/Theory";
 import Tasks from "./pages/Tasks";
 import Feedback from "./pages/Feedback";
+import ForParents from "./pages/ForParents";
+import ForTeachers from "./pages/ForTeachers";
+import Games from "./pages/Games";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +25,9 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/theory" element={<Theory />} />
           <Route path="/tasks" element={<Tasks />} />
+          <Route path="/games" element={<Games />} />
+          <Route path="/for-parents" element={<ForParents />} />
+          <Route path="/for-teachers" element={<ForTeachers />} />
           <Route path="/feedback" element={<Feedback />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
